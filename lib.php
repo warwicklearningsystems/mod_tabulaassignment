@@ -413,7 +413,13 @@ function tabulaassignment_get_coursemodule_info($coursemodule) {
 
            $dt = DateTime::createFromFormat(DateTime::ISO8601, $t->closeDate);
 
-           $output .= "<li><a href='" .  $t->studentUrl . "'>" . $t->name . "</a> - due on " . $dt->format('Y-m-d H:i:s');
+           if($dt instanceof DateTime) {
+             $output .= "<li><a href='" .  $t->studentUrl . "'>" . $t->name . "</a> - due on " . $dt->format('Y-m-d H:i:s');
+           } else {
+             $output .= "<li><a href='" .  $t->studentUrl . "'>" . $t->name . "</a>";
+           }
+
+
 
           //$asslink = new \mod_tabulaassignment\output\mod_tabulaassignment_assignments_renderer($t);
           //$info->content .= $output->render_assignments($asslink);
