@@ -4,7 +4,7 @@ namespace mod_tabulaassignment\output;
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once(dirname(__FILE__) . '/../locallib.php');
+require_once(dirname(__FILE__) . '/../../locallib.php');
 
 
 abstract class list_item implements \renderable, \templatable {
@@ -52,25 +52,30 @@ class tabulaassignment extends list_item implements \templatable, \renderable {
    * @param \stdClass $course A moodle course object
    */
   public function __construct($tabulaassignment) {
-    $css[] = 'fcl-course-link list-group-item';
+    //$css[] = 'list-group-item';
+    $css[] = '';
+
     if (!$tabulaassignment->opened) {
       $css[] = 'dimmed';
     }
+
+    $dt = \DateTime::createFromFormat(\DateTime::ISO8601, $tabulaassignment->closeDate);
+    $this->duedate = $dt->format('jS F Y \a\t g:ia');
+
     $this->classes = implode(' ', $css);
-    $filteroptions = array();
-    $filteroptions['escape'] = false;
-    $this->displaytext = $tabulaassignment->name;
+
+    $this->displaytext = $tabulaassignment->name . " due on " . $this->duedate;
     $this->title = $tabulaassignment->name;
-    $this->url = $tabulaassignment->studentLink;
+    $this->url = $tabulaassignment->studentUrl;
   }
 }
 
 
-class mod_tabulaassignment_assignments_renderer extends \plugin_renderer_base {
+class renderer extends \plugin_renderer_base {
 
-  protected function render_assignments(tabulaassignment $tabulaassignment) {
+  public function render_assignments(tabulaassignment $tabulaassignment) {
     $data = $tabulaassignment->export_for_template($this);
-    return $this->render_from_template('mod_tabulaassignment/list_assignments', $data);
+    return $this->render_from_template('mod_tabulaassignment/list-assignments', $data);
   }
 
 }

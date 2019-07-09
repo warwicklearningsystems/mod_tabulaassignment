@@ -32,6 +32,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 require_once(dirname(__FILE__).'/locallib.php');
+require_once(dirname(__FILE__) . '/classes/output/renderer.php');
+
 
 /**
  * Example constant, you probably want to remove this :-)
@@ -400,34 +402,21 @@ function tabulaassignment_get_coursemodule_info($coursemodule) {
         }
         $info->name = $ta->name;
 
-        //$info->content = format_module_intro('tabulaassignment', $label, $coursemodule->id, false);
-        //$info->content = format_module_intro('tabulaassignment', $label->name, $coursemodule->id, false);
-
+        // Get assignment data from Tabula
         $tabuladata = get_tabula_assignment_data($ta->modulecode);
 
-        //$output = $PAGE->get_renderer('mod_tabulaassignment', 'assignments');
+        $output = $PAGE->get_renderer('mod_tabulaassignment');
 
-        $output = "<h5>Tabula assignments</h5><p>The following assignments are submitted in Tabula for module " . $ta->modulecode . "</p><ul>";
+        // Render assignment details
+        $info->content = "<h5>Tabula assignments</h5><p>The following assignments are listed in Tabula for module " . $ta->modulecode . "</p><ul>";
 
+        // Render each assignment
         foreach($tabuladata as $t) {
-
-           $dt = DateTime::createFromFormat(DateTime::ISO8601, $t->closeDate);
-
-           if($dt instanceof DateTime) {
-             $output .= "<li><a href='" .  $t->studentUrl . "'>" . $t->name . "</a> - due on " . $dt->format('Y-m-d H:i:s');
-           } else {
-             $output .= "<li><a href='" .  $t->studentUrl . "'>" . $t->name . "</a>";
-           }
-
-
-
-          //$asslink = new \mod_tabulaassignment\output\mod_tabulaassignment_assignments_renderer($t);
-          //$info->content .= $output->render_assignments($asslink);
+          $asslink = new \mod_tabulaassignment\output\tabulaassignment($t);
+          $info->content .= $output->render_assignments($asslink);
         }
 
-        $output .= "<ul>";
-
-        $info->content = $output;
+        $info->content .= "</ul>";
 
         return $info;
     } else {
