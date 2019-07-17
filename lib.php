@@ -290,11 +290,11 @@ function tabulaassignment_get_extra_capabilities() {
 function tabulaassignment_scale_used($tabulaassignmentid, $scaleid) {
     global $DB;
 
-    if ($scaleid and $DB->record_exists('tabulaassignment', array('id' => $tabulaassignmentid, 'grade' => -$scaleid))) {
-        return true;
-    } else {
+    //if ($scaleid and $DB->record_exists('tabulaassignment', array('id' => $tabulaassignmentid, 'grade' => -$scaleid))) {
+    //    return true;
+    //} else {
         return false;
-    }
+    //}
 }
 
 /**
@@ -308,11 +308,11 @@ function tabulaassignment_scale_used($tabulaassignmentid, $scaleid) {
 function tabulaassignment_scale_used_anywhere($scaleid) {
     global $DB;
 
-    if ($scaleid and $DB->record_exists('tabulaassignment', array('grade' => -$scaleid))) {
-        return true;
-    } else {
+    //if ($scaleid and $DB->record_exists('tabulaassignment', array('grade' => -$scaleid))) {
+    //    return true;
+    //} else {
         return false;
-    }
+    //}
 }
 
 /* File API */
