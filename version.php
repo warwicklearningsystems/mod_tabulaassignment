@@ -28,7 +28,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'mod_tabulaassignment';
-$plugin->version = 2019020115;
+$plugin->version = 2020033100;
 $plugin->release = 'v0.1';
 $plugin->requires = 2014051200;
 $plugin->maturity = MATURITY_STABLE;
