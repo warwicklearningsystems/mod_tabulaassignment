@@ -53,7 +53,7 @@ function get_tabula_assignment_data($modulecode) {
 
   if($modulecode != '') {
 
-    $url = 'https://tabula.warwick.ac.uk/api/v1/module/' . $modulecode . '/assignments?academicYear=18/19';
+    $url = 'https://tabula.warwick.ac.uk/api/v1/module/' . $modulecode . '/assignments?academicYear=19/20';
 
     $username = get_config('mod_tabulaassignment', 'apiusername');
     $password = get_config('mod_tabulaassignment', 'apipassword');
