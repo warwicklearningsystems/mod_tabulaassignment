@@ -1,3 +1,73 @@
+<head>
+    <link rel="stylesheet" type="text/css" href="styles.css" media="screen"/>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+
+</head>
+
+<body>
+
 <li class='tabula_assignments tabula_assignments_list_item'>
-    <a href='{{ url }}' title='{{ title }}' class='{{ classes }}'>{{ displaytext }}</a>
-</li>
+
+<div>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-6">
+      <p><a href='{{ summaryUrl }}' &nbsp<i class="fas fa-file-upload" ></i></a>&nbsp {{ displaytext }}</p> 
+    </div>
+    <div class="col-6">
+      <p class="headerinfo" >Additional Information</p>    
+    </div>
+  </div>
+</div>
+<div class="container-fluid">
+        <div id="more" class="row">
+            <div class="col-3">
+                <p>Submissions Allowed</p>
+            </div>
+            <div class="col-3">
+                <p>{{fileAttachmentLimit}}</p>
+            </div>
+            <div class="col-6">
+                <p>{{submissionFormText}}</p>
+            </div>
+        </div>
+        <div id="more" class="row">
+            <div class="col-3">
+                <p>Due Date</p>
+            </div>
+            <div class="col-3">
+                <p>{{duedate}}</p>
+            </div>
+            <div class="col-3">
+                <p>Open Date</p>
+            </div>
+            <div class="col-3">
+                <p>{{openDate}}</p>
+            </div>
+        </div>
+        <div id="more" class="row">
+            <div class="col-3">
+                <p>Word Count:</p>
+            </div>
+            <div class="col-3">
+                <p>{{wordCountMax}}</p>
+            </div>
+            <div class="col-3">
+                <p></p>
+            </div>
+            <div class="col-3">
+                <p></p>
+            </div>
+        </div>
+        <div id="more" class="row">
+            <div class="col-12">
+                <p><a href='{{ url }}' class="btn btn-outline-primary btn-sm">Open Tabula to submit your assignment</a> </p>
+            </div>
+        </div>
+    </div>
+    <HR>
+</body>

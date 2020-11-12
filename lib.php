@@ -401,7 +401,8 @@ function tabulaassignment_get_coursemodule_info($coursemodule) {
           $DB->set_field('tabulaassignment', 'name', $ta->name, array('id'=>$ta->id));
         }
         $info->name = $ta->name;
-
+        global $assignmentfound;
+                
         // Get assignment data from Tabula
         $tabuladata = get_tabula_assignment_data($ta->modulecode);
 
@@ -410,12 +411,17 @@ function tabulaassignment_get_coursemodule_info($coursemodule) {
         // Render assignment details
         $info->content = "<h5>Tabula assignments</h5><p>The following assignments are listed in Tabula for module " . $ta->modulecode . "</p><ul>";
 
+        $contentempty = "<p style='color:#2647a0; font-style:italic; font-size: 0.8em'>There are no Assignments listed in Tabula for this module </p>";
         // Render each assignment
+        if (sizeof($tabuladata)==0){
+            $info->content .= $contentempty;
+        }
+
         foreach($tabuladata as $t) {
           $asslink = new \mod_tabulaassignment\output\tabulaassignment($t);
           $info->content .= $output->render_assignments($asslink);
         }
-
+        
         $info->content .= "</ul>";
 
         return $info;
@@ -423,4 +429,19 @@ function tabulaassignment_get_coursemodule_info($coursemodule) {
         return null;
     }
 }
-
+/* Moo 2045 current_academic_year() returns current academic year
+ * used as default in Locallib.php
+ */
+function current_academic_year(){
+    $currentyear = date("y");
+    $currentmonth = date("m");
+    $nextyear = date("y")+1;
+    $prevyear = date("y")-1;
+    if ($currentmonth > 8){
+        $currentyear = ("$currentyear" ."/" ."$nextyear");
+    } else{
+        $currentyear = ("$prevyear" ."/" ."$currentyear");
+    }
+    
+    return $currentyear;
+}

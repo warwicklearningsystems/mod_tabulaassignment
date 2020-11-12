@@ -45,4 +45,5 @@ $string['tabula_username_desc'] = 'Username used to authenticate with Tabula API
 $string['tabula_password'] = 'Password';
 $string['tabula_password_desc'] = 'Password used to authenticate with Tabula API';
 $string['modulecode'] = 'Module code';
+$string['modulecode_help'] = 'Please enter Module code: <br /> This must be in the format AANNN/NN where AA is alpha characters representing the Department <br />  NNN represents the unique course numerical code, <br /> for example CS118';
 
