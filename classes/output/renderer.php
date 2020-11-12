@@ -33,20 +33,12 @@ abstract class list_item implements \renderable, \templatable {
    * @return array $data Template-ready data
    */
   public function export_for_template(\renderer_base $output) {
-
-      $data = array(
-        'classes'             => $this->classes,
-        'displaytext'         => $this->displaytext,
-        'title'               => $this->title,
-        'url'                 => $this->url,
-        'duedate'             => $this->duedate,
-        'summaryUrl'          => $this->summaryUrl,
-        'submissionFormText'  => $this->submissionFormText,
-        'wordCountMax'        => $this->wordCountMax,
-        'openDate'            => $this->openDate,
-        'wordCountMax'        => $this->wordCountMax,
-      );
-    
+    $data = array(
+      'classes'     => $this->classes,
+      'displaytext' => $this->displaytext,
+      'title'       => $this->title,
+      'url'         => $this->url,
+    );
     return $data;
   }
 }
@@ -65,28 +57,16 @@ class tabulaassignment extends list_item implements \templatable, \renderable {
 
     if (!$tabulaassignment->opened) {
       $css[] = 'dimmed';
-    }          
-        if (!$tabulaassignment->ongoingAssignment){
-            $dt = \DateTime::createFromFormat(\DateTime::ISO8601, $tabulaassignment->closeDate);
-            $this->duedate = $dt->format('Y-m-d');
-            $this->displaytext = $tabulaassignment->name . " due on " . $this->duedate;
-        } else{
-            $this->displaytext = $tabulaassignment->name . " (On going Assignment) ";
-            $this->duedate = "Open Ended";
-        }
-        
-        $this->classes = implode(' ', $css);
-        $this->title = $tabulaassignment->name;
-        $this->url = $tabulaassignment->studentUrl; 
-        $this->summaryUrl = $tabulaassignment->summaryUrl;
-        $this->submissionFormText = $tabulaassignment->submissionFormText;
-        $this->wordCountMax = $tabulaassignment->wordCountMax;
-        if (isset($tabulaassignment->openDate)){
-            $dtopen = \DateTime::createFromFormat(\DateTime::ISO8601, $tabulaassignment->openDate);
-            $this->openDate = $dtopen->format('Y-m-d');
-        }
-        $this->wordCountMax = $tabulaassignment->wordCountMax;
+    }
 
+    $dt = \DateTime::createFromFormat(\DateTime::ISO8601, $tabulaassignment->closeDate);
+    $this->duedate = $dt->format('jS F Y \a\t g:ia');
+
+    $this->classes = implode(' ', $css);
+
+    $this->displaytext = $tabulaassignment->name . " due on " . $this->duedate;
+    $this->title = $tabulaassignment->name;
+    $this->url = $tabulaassignment->studentUrl;
   }
 }
 

@@ -50,12 +50,11 @@ class mod_tabulaassignment_mod_form extends moodleform_mod {
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
         // Adding the standard "name" field.
-        $options = ['size' => 5, 'maxlength' => 6, 'pattern'=>"[A-Z]{2}[A-Z 0-9]{3}", 'placeholder'=>"modulecode", 'title'=>"Please enter the course code as in AANNN", 'required'];
-        $mform->addElement('text', 'modulecode', get_string('modulecode', 'tabulaassignment'), $options);
+        $mform->addElement('text', 'modulecode', get_string('modulecode', 'tabulaassignment'), array('size' => '64'));
         $mform->setType('modulecode', PARAM_TEXT);
         $mform->addRule('modulecode', null, 'required', null, 'client');
         $mform->addRule('modulecode', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
-        $mform->addHelpButton('modulecode', 'modulecode', 'tabulaassignment');
+        //$mform->addHelpButton('modulecode', 'tabulaassignmentname', 'tabulaassignment');
 
         // Add standard elements, common to all modules.
         $this->standard_coursemodule_elements();
