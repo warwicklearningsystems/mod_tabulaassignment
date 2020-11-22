@@ -28,6 +28,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/lib/filelib.php');
+require_once(dirname(__FILE__).'/db/DataModel.php'); 
+require_once(dirname(__FILE__).'/db/DateCache.php');
 
 /**
  * Retrieves assignment data from Tabula API
@@ -52,75 +54,126 @@ function get_tabula_assignment_data($modulecode) {
   // openEnded - open ended assignment
 
   if($modulecode != '') {
-
-      $academicyear = current_academic_year();
       
-    $url = 'https://tabula.warwick.ac.uk/api/v1/module/' . $modulecode . '/assignments?academicYear=' .$academicyear;
-
-    $username = get_config('mod_tabulaassignment', 'apiusername');
-    $password = get_config('mod_tabulaassignment', 'apipassword');
-
-    $curldata = download_file_content($url, array('Authorization' => 'Basic ' .
-      (string)base64_encode( $username . ":" . $password )), false, true);
-    
-    $assignmentfound = false;
-    
-    if($curldata->status == 200) {
-        
-        $tabulaassignments = json_decode($curldata->results);
-        
-        if($tabulaassignments->success == true) {
-            $currentdte = date('Y-m-d');
-            $defaultdte = date('Y-m-d', strtotime($currentdte .'+4 weeks'));
-            $ongoingAssessment = 1;
-            
-            $assignmentfound = true;
-            $emptyvalue = "N/A";
-            
-            foreach($tabulaassignments->assignments as $assignment) {
-                if (!(empty($assignment->closeDate))){
-                    $ongoingAssessment = 0;
-                    $closedt = \DateTime::createFromFormat(\DateTime::ISO8601, $assignment->closeDate);
-                    $closingdte = $closedt->format('Y-m-d');
-                } else{
-                    $ongoingAssessment = 1;
-                }
-                
-                if ((($ongoingAssessment == 0) && ($closingdte <= $defaultdte) )|| ($ongoingAssessment == 1)){
-                    $a = new stdClass();
-                    $a->id = $assignment->id;
-                    $a->name = $assignment->name;
-                    $a->studentUrl = $assignment->studentUrl;
-                    $a->ongoingAssignment = 1;
-                    $a->ongoingAssignment = $ongoingAssessment;
-                    if (!(empty($assignment->closeDate))){
-                        $a->closeDate = $assignment->closeDate;
-                        $a->ongoingAssignment = 0;                      
-                    }
-                    $a->opened = $assignment->opened;
-                    $a->summaryUrl = $assignment->summaryUrl;
-                    if ((isset($assignment->submissionFormText)) || !(empty($assignment->submissionFormText))) {
-                        $a->submissionFormText = $assignment->submissionFormText;                       
-                    } else{
-                        $a->submissionFormText = $emptyvalue;                     
-                    }
-                    
-                    if ((isset($assignment->wordCountMax)) || !(empty($assignment->wordCountMax))){
-                        $a->wordCountMax = $assignment->wordCountMax;                        
-                    } else {
-                        $a->wordCountMax = 'Unspecified';                      
-                    }
-                    $a->openDate = $assignment->openDate;
-                    
-                    $assignments[] = $a;
+      $academicyear = current_academic_year();
+      $emptyvalue = ""; 
+      
+      $url = 'https://tabula.warwick.ac.uk/api/v1/module/' . $modulecode . '/assignments?academicYear=' .$academicyear;
+      
+      $username = get_config('mod_tabulaassignment', 'apiusername');
+      $password = get_config('mod_tabulaassignment', 'apipassword');
+      $graceperiod = get_config('mod_tabulaassignment', 'apigraceperiod');   
+      $currentdte = date('Y-m-d');
+      $rangeMaxDte = date('Y-m-d', strtotime($currentdte .'+4 weeks'));
+      $rangeMinDte = date('Y-m-d', strtotime($currentdte .'-4 weeks'));
+           
+      $curldata = download_file_content($url, array('Authorization' => 'Basic ' .
+          (string)base64_encode( $username . ":" . $password )), false, true);
+      
+      if($curldata->status == 200) {
+          $tabulaassignments = json_decode($curldata->results);
+          
+          if($tabulaassignments->success == true) {
+              
+              foreach($tabulaassignments->assignments as $assignment) {
+                  if (!($assignment->openEnded)){
+                      $closedt = \DateTime::createFromFormat(\DateTime::ISO8601, $assignment->closeDate);
+                      $closingdte = $closedt->format('Y-m-d');
+                      $openEnded = 0;
+                  } else{
+                      $openEnded = 1;
+                  }              
+                  
+                  if (($openEnded) || ((!($openEnded)) && (($closingdte <= $rangeMaxDte) && ($closingdte >= $rangeMinDte) ))){
+                      
+                      $a = new DataModel();
+                      
+                      if (!(empty($assignment->module))){
+                          $a->Code = $assignment->module->code;
+                          $a->moduleName = $assignment->module->name;
+                      }
+                      
+                      $a->graceperiod = $rangeMinDte;
+                      
+                      if (!(empty($assignment->sitsLinks))){
+                          $a->moduleCode = $assignment->sitsLinks[0]->moduleCode;
+                      }
+                      
+                      $a->id = $assignment->id;
+                      $a->name = $assignment->name;
+                      $a->studentUrl = $assignment->studentUrl;
+                      
+                      if ($assignment->openEnded){
+                          $a->openEnded = 1;
+                          $a->sortfield = get_end_of_term($currentdte, 1);
+                      } else{
+                          $a->openEnded = 0;
+                      }
+                                            
+                      if (!($assignment->openEnded)){
+                          $a->closeDate = $assignment->closeDate; 
+                          $a->sortfield = $closingdte;
+                      }
+                      
+                      $a->summaryUrl = $assignment->summaryUrl;
+                      
+                      if ((isset($assignment->submissionFormText)) || !(empty($assignment->submissionFormText))){
+                          $a->submissionFormText = $assignment->submissionFormText;
+                      }
+                      else{
+                          $a->submissionFormText = $emptyvalue;
+                      }
+                      
+                      if ((isset($assignment->wordCountMax)) || !(empty($assignment->wordCountMax))){
+                          $a->wordCountMax = $assignment->wordCountMax;
+                      }
+                      else {
+                          $a->wordCountMax = '';
+                      }
+                      
+                      $a->opened = $assignment->opened;
+                      
+                      if($assignment->closed){
+                          $a->closed = $assignment->closed;
+                          $a->sortfield = get_end_of_term($closingdte, 0);
+                      } else{
+                          $a->closed = 0;
+                      }
+                      
+                      $a->summaryUrl = $assignment->summaryUrl;
+                      
+                      if ((isset($assignment->submissionFormText)) || !(empty($assignment->submissionFormText))){
+                          $a->submissionFormText = $assignment->submissionFormText;
+                      }
+                      
+                      if ((isset($assignment->fileAttachmentTypes)) || !(empty($assignment->fileAttachmentTypes))){
+                          $a->fileAttachmentTypes = implode($assignment->fileAttachmentTypes,"; ");
+                      } else{
+                          $a->fileAttachmentTypes = "";
+                      }
+                      
+                      if (!(empty($assignment->wordCountConventions))){
+                          $a->wordCountConventions = $assignment->wordCountConventions;
+                      }
+                      
+                      if (!(empty($assignment->wordCountMin))){
+                          $a->wordCountMin = $assignment->wordCountMin;
+                      }
+                      
+                      if (!(empty($assignment->wordCountMax))){
+                          $a->wordCountMax = $assignment->wordCountMax;
+                      }
+                      
+                      $a->summative = $assignment->summative;
+                      $a->openDate = $assignment->openDate;
+                      $a->graceperiod = $graceperiod;
+                      $a->cache_expiry_date = set_cache_clear_date($currentdte);
+                      $assignments[] = $a;
                 }
             }
         }
-      
     }
-
   }
-
-
+  
   return $assignments;
 }

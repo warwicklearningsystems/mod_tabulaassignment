@@ -27,7 +27,11 @@ if (!defined('MOODLE_INTERNAL')) {
 
 if ($ADMIN->fulltree) {
     require_once("$CFG->libdir/resourcelib.php");
-
+    
+    $settings->add(new admin_setting_configtext('mod_tabulaassignment/apigraceperiod',
+                                    get_string('hoursgrace', 'tabulaassignment'),
+                                    '', 48, PARAM_INT));
+    
     $settings->add( new admin_setting_configtext('mod_tabulaassignment/apiusername',
       get_string('tabula_username', 'mod_tabulaassignment'),
       get_string('tabula_username_desc', 'mod_tabulaassignment'), '') );
