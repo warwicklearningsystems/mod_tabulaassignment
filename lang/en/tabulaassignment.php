@@ -46,4 +46,7 @@ $string['tabula_password'] = 'Password';
 $string['tabula_password_desc'] = 'Password used to authenticate with Tabula API';
 $string['modulecode'] = 'Module code';
 $string['modulecode_help'] = 'Please enter Module code: <br /> This must be in the format AANNN/NN where AA is alpha characters representing the Department <br />  NNN represents the unique course numerical code, <br /> for example CS118';
-
+$string['apiusername'] = 'API User Name';
+$string['apipassword'] = 'API User password';
+$string['hoursgrace'] = 'Number of Hours for submission after due Date';
+$string['hoursgrace_desc'] = 'Please enter the Number of Hours student has for submission after due date';

@@ -29,8 +29,34 @@ and open the template in the editor.
     font-size: 0.9em;
 }
 
-.headerinfo{
-    font-size: 0.95em;
-    font-weight: bold;
+.datainfo {
+    font-size: 0.9em;
+    font-style: italic;
+    color: #2647a0
 }
 
+.headerinfo{
+    font-size: 0.9em;
+    font-style: italic;
+}
+
+.row-frame {
+    border: #439EDE;
+    border-width: 1px;    
+}
+
+.container-fluid{
+    width:100%;
+    padding-right:15px;
+    padding-left:15px;
+    margin-right:auto;
+    margin-left:auto
+}
+
+a:hover{
+    text-decoration:none;    
+}
+
+.line{
+    line-height:0.8em;
+}

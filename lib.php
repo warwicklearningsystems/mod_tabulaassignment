@@ -395,34 +395,70 @@ function tabulaassignment_get_coursemodule_info($coursemodule) {
     if ($ta = $DB->get_record('tabulaassignment', array('id'=>$coursemodule->instance), 'id, name, modulecode, assignmentuuid')) {
 
         $info = new cached_cm_info();
-
+        
+        $lists = array();
         if(empty($ta->name)) {
           $ta->name = 'tabulaassignment{$ta->id}';
           $DB->set_field('tabulaassignment', 'name', $ta->name, array('id'=>$ta->id));
         }
         $info->name = $ta->name;
-        global $assignmentfound;
+        $code = $ta->modulecode;
+        
+        //Moo-2045 retrieve current academic year
+        $academicyear = current_academic_year(); 
+              
+        $cache = cache::make_from_params(cache_store::MODE_SESSION, 'tabulaassignment', 'tabulaassignment-list');
+        $lists = $cache->get('cached_data');
+
+        if (check_cache($cache, $code)){
+            //cache exists, check if cache has expired...
+
+            if(cache_expired($lists)){
+                //if Cache expired purge cache and commit a new fetch from tabula to refresh... data may have changed.
+                $cache->purge();
+                $tabuladata = get_tabula_assignment_data($ta->modulecode, $academicyear);
+                $lists = store_cache($tabuladata, $cache);
+            }
+            else{
+            }
+            $tabuladata = sort_data($lists);
+            
+        } else{ 
+            $tabuladata = get_tabula_assignment_data($ta->modulecode, $academicyear);          
+            $lists = store_cache($tabuladata, $cache);
+            $tabuladata = sort_data($lists);
+        }
                 
         // Get assignment data from Tabula
-        $tabuladata = get_tabula_assignment_data($ta->modulecode);
-
         $output = $PAGE->get_renderer('mod_tabulaassignment');
+        
+        if ((!(empty($tabuladata))) && (sizeof($tabuladata)>0) ){
+            $modulename = get_module_name($tabuladata);
+        }        
 
         // Render assignment details
-        $info->content = "<h5>Tabula assignments</h5><p>The following assignments are listed in Tabula for module " . $ta->modulecode . "</p><ul>";
+        $info->content = "<h5>Tabula assignments</h5><p>The following assignments are listed in Tabula for module " . $ta->modulecode ;
 
-        $contentempty = "<p style='color:#2647a0; font-style:italic; font-size: 0.8em'>There are no Assignments listed in Tabula for this module </p>";
-        // Render each assignment
-        if (sizeof($tabuladata)==0){
-            $info->content .= $contentempty;
-        }
-
-        foreach($tabuladata as $t) {
-          $asslink = new \mod_tabulaassignment\output\tabulaassignment($t);
-          $info->content .= $output->render_assignments($asslink);
+        if ((!(empty($tabuladata))) && (sizeof($tabuladata)>0)){
+            $info->content .= ": " . "$modulename  ($academicyear ) </p>";
+        } else {
+            $info->content .= "</p>";
         }
         
-        $info->content .= "</ul>";
+        $contentempty = "<p style='color:#2647a0; font-style:italic; font-size: 0.8em'>There are no Assignments listed in Tabula for this module </p>";
+        // Render each assignment
+        if (!(empty($tabuladata))){
+            if (sizeof($tabuladata)==0){
+                $info->content .= $contentempty;
+            }
+        }
+        
+        if (!(empty($tabuladata))){
+            foreach($tabuladata as $t){
+                $asslink = new \mod_tabulaassignment\output\tabulaassignment($t);
+                $info->content .= $output->render_assignments($asslink);
+            }
+        }
 
         return $info;
     } else {
@@ -444,4 +480,137 @@ function current_academic_year(){
     }
     
     return $currentyear;
+}
+
+/*
+ * MOO-2045 Store_cache() method introduced to store the data retrieved in cache.
+ * the data can be retrieved from cache to minimize queries to the Tabula.
+ */
+function store_cache($tabuladata, $cache){
+    global $DB, $COURSE, $PAGE;
+    
+    if (!(is_null($COURSE->idnumber))){
+        $cache->set('cached_data',$tabuladata );
+        return $cache->get('cached_data');
+    } else{
+        return $cache->get('cached_data');
+    }  
+}
+/*
+ * get_module_name() returns the name of the module 
+ */
+function get_module_name($tabuladata){
+    if (!(empty($tabuladata))){
+       return $tabuladata[0]->moduleName;
+   }  
+}
+
+/*
+ * MOO 2079 set_cache_clear_date() creates an instance of the object DateCache
+ * populates the object with expiration date for cache
+ * cache to expire at 04:00 following day
+ */
+function set_cache_clear_date($currentdte){
+
+    require_once(dirname(__FILE__).'/db/DateCache.php');  
+
+        $tasks = new DateCache();
+        $tasks->dayofweek = date('l', strtotime( $currentdte));
+        $tasks->day = date('d', strtotime( $currentdte))+1;
+        $tasks->month = date('m', strtotime( $currentdte));  
+
+    return $tasks;
+}
+
+/*
+ * MOO-2079 validate_cache checks whether the cache available in store has expired or not.
+ * if yes, the cache has expired (expiration is at 4 Am following day)
+ */
+function cache_expired($lists){
+   
+    $currentDte = date('Y-m-d H:i:s');
+    
+    foreach($lists as $itemList){
+        
+        $myStdClass = json_decode(json_encode($itemList->cache_expiry_date));
+        $expiryDate = date("$myStdClass->day" .'-' ."$myStdClass->month" .'-' .date("Y") ." " .$myStdClass->hour .':00:00' );
+
+        $diff = strtotime($expiryDate) - strtotime($currentDte);
+        $hours = $diff / ( 60 * 60 );
+        if ($hours > 1){
+            return 0;
+        }
+        else{
+            return 1;
+        }
+
+    }
+}
+/*
+ * MOO 2079 Check-cache() to find if the module code is already in cache....
+ * if in cache, pull data from cache. no need to run json.
+ */
+function check_cache($cache, $code){
+    
+    $lists = $cache->get('cached_data');
+    $val = 0; 
+    
+    if (!(empty($lists))){
+        foreach($lists as $datalist){
+            if ($datalist->Code == $code)
+                $val = 1;
+        }
+    } 
+    return $val;
+}
+
+/*
+ * MOO 2079 Convert the Array into a string. Implode will not work as Implode 
+ * still will return an array.
+ */
+function subArraysToString($ar, $sep = ', ') {
+    $str = '';
+    foreach ($ar as $val) {
+        $str .= implode($sep, $val);
+        $str .= $sep; // add separator between sub-arrays
+    }
+    $str = rtrim($str, $sep); // remove last separator
+    return $str;
+} 
+
+/*
+ * MOO 2079 get_endofterm date. Method to determine last day of current term
+ * to populate $sortfield which will only be used as a dummy date field only for sorting.
+ * to ensure all expired items or closed assignments will move to the bottom   
+ */
+function get_end_of_term($date, $status){
+    
+    if (date('m', strtotime( $date)) >= 8){
+        $year = date('Y', strtotime( $date))+1;
+    } else {
+        $year = date('Y', strtotime( $date));
+    }   
+    //MOO 2079 we alocate a dummy date of 1st August of the end of current academic year for all open ended items
+    if ($status == 1){
+        return (date_format(date_create($year ."-08-01"),"Y/m/d H:i:s"));
+    } else {
+        //not open ended assignments...we use a dummy date of 15th August of current academic year for any expired items
+        return (date_format(date_create($year ."-08-15"),"Y/m/d H:i:s"));
+    }  
+}
+/*MOO 2079  sort_data() function to sort data in ascending order, 
+ * any expired assignments or assessments, should be placed at the end.
+ * use a dummy sortfield entered as a date to facilitate the sort
+ */
+function sort_data($array){
+    
+    $ord = array();
+    $vals = array();
+    
+    foreach ($array as $key => $value){
+        $ord[] = strtotime($value->sortfield);
+        $vals[] = strtotime($value->closeDate);
+    }
+    array_multisort($ord, SORT_ASC, $vals, SORT_DESC, $array);
+    return $array;
 }
