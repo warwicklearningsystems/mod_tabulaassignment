@@ -75,7 +75,7 @@ class tabulaassignment extends list_item implements \templatable, \renderable {
       $currentdte = date('Y-m-d');
       $dterangemin = date('Y-m-d', strtotime($currentdte .'+7 days'));
       
-      $this->id = $tabulaassignment->id;
+      $this->id = 'TaskID' .$tabulaassignment->id;
       
       if ($tabulaassignment->summative == 1){
           $this->summative = " (Summative) ";
@@ -142,7 +142,7 @@ class tabulaassignment extends list_item implements \templatable, \renderable {
       if (($tabulaassignment->openDate) < $currentdte){
           $this->opendatelegend = " Opened on";
       } else{
-          $this->opendatelegend = " Open on";
+          $this->opendatelegend = " Opens on";
       }
       
       if (isset($tabulaassignment->openDate)){
