@@ -39,7 +39,7 @@ abstract class list_item implements \renderable, \templatable {
           'classes'             => $this->classes,
           'displaytext'         => $this->displaytext,
           'title'               => $this->title,
-          'url'                 => $this->url,
+          'studentUrl'          => $this->studentUrl,
           'duedate'             => $this->duedate,
           'summaryUrl'          => $this->summaryUrl,
           'submissionFormText'  => $this->submissionFormText,
@@ -118,7 +118,7 @@ class tabulaassignment extends list_item implements \templatable, \renderable {
       $this->imminentdue = $tabulaassignment->imminentdue;
       $this->classes = implode(' ', $css);
       $this->title = $tabulaassignment->name;
-      $this->url = $tabulaassignment->studentUrl; 
+      $this->studentUrl = $tabulaassignment->studentUrl; 
       $this->summaryUrl = $tabulaassignment->summaryUrl;
       
       if (isset($tabulaassignment->submissionFormText)){
