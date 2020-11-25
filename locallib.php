@@ -140,8 +140,6 @@ function get_tabula_assignment_data($modulecode) {
                           $a->closed = 0;
                       }
                       
-                      $a->summaryUrl = $assignment->summaryUrl;
-                      
                       if ((isset($assignment->submissionFormText)) || !(empty($assignment->submissionFormText))){
                           $a->submissionFormText = $assignment->submissionFormText;
                       }

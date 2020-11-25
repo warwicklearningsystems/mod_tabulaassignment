@@ -1,10 +1,5 @@
 <head>
     <link rel="stylesheet" type="text/css" href="styles.css" media="screen"/>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
-
 </head>
 
 <body>  
@@ -13,8 +8,8 @@
         <div class="row" >
             <div class="col-sm-12"> {{#closed}}<p class=headerinfo><a href='{{ summaryUrl }}' &nbsp<i class="fa fa-history" style="font-size:20px;color:grey;" ></i></a>&nbsp <b> {{ displaytext }}</b> {{insertword}} <b> {{duedate}} </b> </p>  {{/closed}}
                 {{^closed}} 
-                {{#imminentdue}}<p class=headerinfo><a href='{{ summaryUrl }}' &nbsp<i class="fas fa-exclamation-triangle" style="font-size:20px;color:black;" ></i></a>&nbsp <b> {{ displaytext }} </b> {{insertword}} <b> {{duedate}} </b> </p> {{/imminentdue}}
-                {{^imminentdue}}<p class=headerinfo><a href='{{ summaryUrl }}' &nbsp<i class="fas fa-file-upload" style="font-size:20px;color:black;" ></i></a>&nbsp <b> {{ displaytext }} </b> {{insertword}} <b> {{duedate}} </b> </p> {{/imminentdue}}
+                {{#imminentdue}}<p class=headerinfo><a href='{{ summaryUrl }}' &nbsp<i class="fa fa-exclamation-triangle" style="font-size:20px;color:black;" ></i></a>&nbsp <b> {{ displaytext }} </b> {{insertword}} <b> {{duedate}} </b> </p> {{/imminentdue}}
+                {{^imminentdue}}<p class=headerinfo><a href='{{ summaryUrl }}' &nbsp<i class="fa fa-upload" style="font-size:20px;color:black;" ></i></a>&nbsp <b> {{ displaytext }} </b> {{insertword}} <b> {{duedate}} </b> </p> {{/imminentdue}}
                 {{/closed}}
             </div>
         </div>
@@ -24,7 +19,7 @@
             </div>
 
         </div>{{/expired}}
-        {{^expired}}<p><a href='{{ url }}' class="btn btn-outline-primary btn-sm">Open Tabula to submit your assignment</a> </p> {{/expired}}
+        {{^expired}}<p><a href='{{ studentUrl }}' class="btn btn-outline-primary btn-sm">Open Tabula to submit your assignment</a> </p> {{/expired}}
  </div>
     <hr>
 </body>

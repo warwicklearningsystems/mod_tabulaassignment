@@ -39,7 +39,7 @@ abstract class list_item implements \renderable, \templatable {
           'classes'             => $this->classes,
           'displaytext'         => $this->displaytext,
           'title'               => $this->title,
-          'url'                 => $this->url,
+          'studentUrl'          => $this->studentUrl,
           'duedate'             => $this->duedate,
           'summaryUrl'          => $this->summaryUrl,
           'submissionFormText'  => $this->submissionFormText,
@@ -75,7 +75,7 @@ class tabulaassignment extends list_item implements \templatable, \renderable {
       $currentdte = date('Y-m-d');
       $dterangemin = date('Y-m-d', strtotime($currentdte .'+7 days'));
       
-      $this->id = $tabulaassignment->id;
+      $this->id = 'TaskID' .$tabulaassignment->id;
       
       if ($tabulaassignment->summative == 1){
           $this->summative = " (Summative) ";
@@ -118,7 +118,7 @@ class tabulaassignment extends list_item implements \templatable, \renderable {
       $this->imminentdue = $tabulaassignment->imminentdue;
       $this->classes = implode(' ', $css);
       $this->title = $tabulaassignment->name;
-      $this->url = $tabulaassignment->studentUrl; 
+      $this->studentUrl = $tabulaassignment->studentUrl; 
       $this->summaryUrl = $tabulaassignment->summaryUrl;
       
       if (isset($tabulaassignment->submissionFormText)){
@@ -142,7 +142,7 @@ class tabulaassignment extends list_item implements \templatable, \renderable {
       if (($tabulaassignment->openDate) < $currentdte){
           $this->opendatelegend = " Opened on";
       } else{
-          $this->opendatelegend = " Open on";
+          $this->opendatelegend = " Opens on";
       }
       
       if (isset($tabulaassignment->openDate)){
