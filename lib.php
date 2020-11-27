@@ -402,7 +402,7 @@ function tabulaassignment_get_coursemodule_info($coursemodule) {
           $DB->set_field('tabulaassignment', 'name', $ta->name, array('id'=>$ta->id));
         }
         $info->name = $ta->name;
-        $code = $ta->modulecode;
+        $code = strtoupper($ta->modulecode);
         
         //Moo-2045 retrieve current academic year
         $academicyear = current_academic_year(); 
@@ -424,7 +424,7 @@ function tabulaassignment_get_coursemodule_info($coursemodule) {
             $tabuladata = sort_data($lists);
             
         } else{ 
-            $tabuladata = get_tabula_assignment_data($ta->modulecode, $academicyear);          
+            $tabuladata = get_tabula_assignment_data(strtoupper($ta->modulecode), $academicyear);          
             $lists = store_cache($tabuladata, $cache);
             $tabuladata = sort_data($lists);
         }
@@ -437,7 +437,7 @@ function tabulaassignment_get_coursemodule_info($coursemodule) {
         }        
 
         // Render assignment details
-        $info->content = "<h5>Tabula assignments</h5><p>The following assignments are listed in Tabula for module " . $ta->modulecode ;
+        $info->content = "<h5>Tabula assignments</h5><p>The following assignments are listed in Tabula for module " . strtoupper($ta->modulecode) ;
 
         if ((!(empty($tabuladata))) && (sizeof($tabuladata)>0)){
             $info->content .= ": " . "$modulename  ($academicyear ) </p>";

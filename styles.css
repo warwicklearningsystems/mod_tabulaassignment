@@ -7,9 +7,10 @@ and open the template in the editor.
     Created on : 12-Nov-2020, 12:53:45
     Author     : fae60
 */
+
 .button {
     display: inline-block;
-    background-color: #003DB8;
+    background-color: #204f79;
     border-radius: 10px;
     border: 4px double #cccccc;
     color: #eeeeee;
@@ -29,15 +30,20 @@ and open the template in the editor.
     font-size: 0.9em;
 }
 
-.datainfo {
-    font-size: 0.9em;
-    font-style: italic;
-    color: #2647a0
+.tabula-datainfo {
+    font-size: 0.96em;
+    margin-bottom:  0.9em;
+    color: #204f79;
 }
 
-.headerinfo{
-    font-size: 0.9em;
-    font-style: italic;
+.tabulaheaderinfo{
+    font-size: 0.95em;
+}
+
+.tabula-rowHeader{
+    font-size: 0.96em;
+    margin-bottom: 0.5em;
+    color: #204f79;
 }
 
 .row-frame {
@@ -61,3 +67,10 @@ a:hover{
     line-height:0.8em;
 }
 
+.button:target {
+    background-color: #92b3e8;
+}
+
+.btn{
+    font-size: 1.2em;
+}
