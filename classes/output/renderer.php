@@ -150,8 +150,8 @@ class tabulaassignment extends list_item implements \templatable, \renderable {
          $this->openDate = $dtopen->format('l jS \of F Y');
       }
       
-      if ((isset($tabulaassignment->wordCountMax)) || (isset($tabulaassignment->wordCountMax))){
-          $this->wordCount = $tabulaassignment->wordCountMin .' - ' .$tabulaassignment->wordCountMax;
+      if (!($tabulaassignment->wordCountMin == "") || !($tabulaassignment->wordCountMax == "")){
+          $this->wordCount = $tabulaassignment->wordCountMin .' - ' .$tabulaassignment->wordCountMax ." words.";
       }
       else{
           $this->wordCount = "";
