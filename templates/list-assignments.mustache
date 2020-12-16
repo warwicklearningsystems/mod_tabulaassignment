@@ -2,6 +2,7 @@
     <link rel="stylesheet" type="text/css" href="styles.css" media="screen"/>
 
 </head>
+
 <script>
 toggleChevron = function(button) {
   $(button).find('span').toggleClass('fa fa-toggle-down fa fa-toggle-up');
@@ -10,50 +11,60 @@ toggleChevron = function(button) {
 </script>
 <body>  
        
- <div class="container-fluid">
-        <div class="row" >
-            <div class="col-sm-12"> {{#closed}}<p class=tabulaheaderinfo><a href='{{ summaryUrl }}' <i class="fa fa-history" alt="Past assignment" title="Past assignment" style="font-size:20px;color:grey;" ></i></a>  <b> {{ displaytext }}</b> {{insertword}} <b> {{duedate}} </b> <i type="button" onclick="toggleChevron(this)" class="btn" data-toggle="collapse" data-target="#{{id}} " style="font-size:20px;color:black;"><span class="fa fa-toggle-down"></span></i></p>  {{/closed}}
-                {{^closed}} 
-                {{#imminentdue}}<p class=tabulaheaderinfo><a href='{{ summaryUrl }}' <i class="fa fa-exclamation-triangle" alt="Assignment due soon" title="Assignment due soon" style="font-size:20px;color:black;" ></i></a> <b> {{ displaytext }} </b> {{insertword}} <b> {{duedate}} </b> <i type="button" onclick="toggleChevron(this)" class="btn" data-toggle="collapse" data-target="#{{id}} " style="font-size:20px;color:black;" ><span class="fa fa-toggle-down"></span></i></p> {{/imminentdue}}
-                {{^imminentdue}}<p class=tabulaheaderinfo><a href='{{ summaryUrl }}' <i class="fa fa-upload" alt="Assignment summary" title="Assignment summary" style="font-size:20px;color:black;" ></i></a> <b> {{ displaytext }} </b> {{insertword}} <b> {{duedate}} </b> <i type="button" onclick="toggleChevron(this)" class="btn" data-toggle="collapse" data-target="#{{id}} " style="font-size:20px;color:black;"><span class="fa fa-toggle-down"></span></i></p> {{/imminentdue}}
-                {{/closed}}
+ <head>
+<link rel="stylesheet" type="text/css" href="styles.css" media="screen"/>
+</head>
+<script>
+toggleChevron = function(button) {
+  $(button).find('span').toggleClass('fa fa-toggle-down fa fa-toggle-up');
+}
+</script>
+<body>
+
+<div class="parent">
+    <div class="contents">
+        {{#closed}}<p class=tabulaheaderinfo><a href='{{ summaryUrl }}' <i class="fa fa-history" alt="Past assignment" title="Past assignment" style="font-size:20px;color:grey;" ></i></a>  <b> {{ displaytext }}</b> {{insertword}} <b> {{duedate}} </b> </p>  {{/closed}}
+           {{^closed}} 
+           {{#imminentdue}}<p class=tabulaheaderinfo><a href='{{ summaryUrl }}' <i class="fa fa-exclamation-triangle" alt="Assignment due soon" title="Assignment due soon" style="font-size:20px;color:black;" ></i></a> <b> {{ displaytext }} </b> {{insertword}} <b> {{duedate}} </b> </p> {{/imminentdue}}
+           {{^imminentdue}}<p class=tabulaheaderinfo><a href='{{ summaryUrl }}' <i class="fa fa-upload" alt="Assignment summary" title="Assignment summary" style="font-size:20px;color:black;" ></i></a> <b> {{ displaytext }} </b> {{insertword}} <b> {{duedate}} </b> </p> {{/imminentdue}}
+        {{/closed}}
+    </div>
+    <div class="expand">
+        <i type="button" onclick="toggleChevron(this)" data-toggle="collapse" data-target="#{{id}} " style="font-size:20px;color:black;" ><span class="fa fa-toggle-down"></span></i>
+    </div>
+
+
+    <div id={{id}} class="collapse contents">
+        <div id="more" class="row"> 
+            <div class="col-sm-12 aligncontent" >
+                <p class="tabula-datainfo"><em class="tabula-rowHeader"> {{opendatelegend}} </em>{{openDate}} </p>
             </div>
         </div>
-        
-        <div id={{id}} class="collapse">
-            <div id="more" class="row">
-                <div class="col-sm-12">
-                    <p class="tabula-datainfo"><em class="tabula-rowHeader"> {{opendatelegend}} </em>{{openDate}} </p>
-                </div>
-            </div>
-            {{#wordCount}}<div id="more" class="row">
-                <div class="col-sm-3">
-                    <p class="tabula-rowHeader">Word count: </p>
-                </div>
-                <div class="col-sm-9">
-                    <p class="tabula-datainfo">{{wordCount}} </p>
-                </div>
-            </div>{{/wordCount}}
-            {{#submissionFormText}}<div id="more" class="row">
-                <div class="col-sm-3">
-                    <p class="tabula-rowHeader">Submission Form Text: </p>
-                </div>
-                <div class="col-sm-9">
-                    <p class="tabula-datainfo">{{submissionFormText}} </p>
-                </div>
-            </div>{{/submissionFormText}} 
-            {{#fileAttachmentTypes}}<div id="more" class="row">
-                <div class="col-sm-3">
-                    <p class="tabula-rowHeader">File Attachment Types: </p>
-                </div>
-                <div class="col-sm-9">
-                    <p class="tabula-datainfo">{{fileAttachmentTypes}} </p>
-                </div>
-            </div>{{/fileAttachmentTypes}}
-        </div>      
-        {{^expired}}<p><a href='{{ studentUrl }}' class="btn btn-outline-primary btn-sm">Open Tabula to submit your assignment</a> </p> {{/expired}}
- </div>
-    <hr>
-
-
+        {{#wordCount}}<div id="more" class="row"> 
+        <div class="col-sm-3 aligncontent">
+            <p class="tabula-rowHeader">Word count: </p>
+        </div>
+        <div class="col-sm-8">
+            <p class="tabula-datainfo">{{wordCount}} </p>
+        </div>
+        </div>{{/wordCount}}
+        {{#submissionFormText}}<div id="more" class="row"> 
+        <div class="col-sm-3 aligncontent">
+            <p class="tabula-rowHeader">Submission Form Text: </p>
+        </div>
+        <div class="col-sm-8">
+            <p class="tabula-datainfo">{{submissionFormText}} </p>
+        </div>
+        </div>{{/submissionFormText}}
+        {{#fileAttachmentTypes}}<div id="more" class="row"> 
+        <div class="col-sm-3 aligncontent">
+            <p class="tabula-rowHeader">File Attachment Types:</p>
+        </div>
+        <div class="col-sm-8">
+            <p class="tabula-datainfo">{{fileAttachmentTypes}} </p>
+        </div>
+    </div>{{/fileAttachmentTypes}}
+    </div>
+        {{^expired}}<p><a href='{{ studentUrl }}' class="btn btn-outline-primary btn-sm">Open Tabula to submit your assignment</a> </p> <hr>{{/expired}}
+</div>
 </body>

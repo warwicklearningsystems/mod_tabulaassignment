@@ -46,17 +46,21 @@ and open the template in the editor.
     color: #204f79;
 }
 
+.headerSection{
+    color:#00171b;
+    font-size: 0.95em;
+    width: 100%;
+}
+
+.nocontentHeader{
+    color:#2647a0;
+    font-style:italic;
+    font-size: 0.85em;
+}
+
 .row-frame {
     border: #439EDE;
     border-width: 1px;    
-}
-
-.container-fluid{
-    width:100%;
-    padding-right:15px;
-    padding-left:15px;
-    margin-right:auto;
-    margin-left:auto
 }
 
 a:hover{
@@ -72,5 +76,158 @@ a:hover{
 }
 
 .btn{
-    font-size: 1em;
+    font-size: 0.95em;
+}
+
+.aligncontent{
+    margin-left: 20px;
+}
+
+.parent{
+    width: 750px;
+}
+.contents{
+    width: 94%;
+    float: left;
+    overflow-x: hidden; /* Hide horizontal scrollbar */
+}
+
+.expand{
+    width: 30px;
+    float: right;
+    overflow-x: hidden; /* Hide horizontal scrollbar */
+    position: static;
+    text-align: right;
+}
+
+@media only screen and (max-device-width: 480px) {
+    .parent{
+        width: 240px;
+        font-size: 0.85em;
+    }
+
+    .contents{
+        width: 100%;
+        overflow-x: hidden; /* Hide horizontal scrollbar */
+        display: block;
+        float: none;
+        font-size: 0.85em;
+    }
+    .expand{
+        width: 40px;
+        float: none
+    }
+}
+/* Surface Duo */
+@media screen and (device-width: 540px) and (orientation:portrait) {
+    .parent{
+        width: 370px;
+        font-size: 0.80em;
+    }
+
+    .contents{
+        width: 90%;
+        overflow-x: hidden; /* Hide horizontal scrollbar */
+        display: block;
+        float: left;
+        font-size: 0.85em;
+    }
+
+    .expand{
+        width: 30px;
+        float: right;
+        position: static;
+        font-size: 0.85em;
+    }
+}
+
+/* iPad and iPad mini */
+@media screen and (device-width: 768px) and (orientation:portrait) {
+    .parent{
+        width: 500px;
+        font-size: 0.80em;
+    }
+
+    .contents{
+        width: 90%;
+        overflow-x: hidden; /* Hide horizontal scrollbar */
+        display: block;
+        float: left;
+        font-size: 0.95em;
+    }
+
+    .expand{
+        width: 30px;
+        float: right;
+        position: static;
+        font-size: 0.95em;
+    }
+}
+/* surface duo landscape mode */
+@media screen and (device-width: 720px) and (orientation:landscape) {
+    .parent{
+        width: 490px;
+        font-size: 0.80em;
+    }
+
+    .contents{
+        width: 90%;
+        overflow-x: hidden; /* Hide horizontal scrollbar */
+        display: block;
+        float: left;
+        font-size: 0.85em;
+    }
+
+    .expand{
+        width: 30px;
+        float: right;
+        position: static;
+        font-size: 0.85em;
+    }
+}
+
+/* iPhone SE & iPhone 6,7,8 landscape */
+@media screen and (device-width: 667px) and (orientation:landscape) {
+    .parent{
+        width: 400px;
+        font-size: 0.80em;
+    }
+
+    .contents{
+        width: 90%;
+        overflow-x: hidden; /* Hide horizontal scrollbar */
+        display: block;
+        float: left;
+        font-size: 0.85em;
+    }
+
+    .expand{
+        width: 30px;
+        float: right;
+        position: static;
+        font-size: 0.85em;
+    }
+}
+/* iPhone SE */
+
+@media screen and (min-device-width: 320px) and (max-device-width: 360px) and (orientation:portrait) {
+    .parent{
+        width: calc(340px - (340px / 2));
+        font-size: 0.80em;
+    }
+
+    .contents{
+        width: 100%;
+        overflow-x: hidden; /* Hide horizontal scrollbar */
+        display: block;
+        float: none;
+        font-size: 0.8em;
+    }
+
+    .expand{
+        width: 30px;
+        position: static;
+        font-size: 0.8em;
+        float: none;
+    }
 }
