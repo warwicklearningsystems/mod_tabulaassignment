@@ -40,6 +40,14 @@ and open the template in the editor.
     font-size: 0.95em;
 }
 
+.tabula-mobile-header{
+    font-size: 0.95em;
+    border-style: solid;
+    border-color:#003DB8;
+    border-width: thin;
+    padding: 3px;
+}
+
 .tabula-rowHeader{
     font-size: 0.96em;
     margin-bottom: 0.5em;
@@ -100,29 +108,47 @@ a:hover{
     text-align: right;
 }
 
-@media only screen and (max-device-width: 480px) {
-    .parent{
+.line-height {line-height: 1.2;
+    margin-top: 0 ;
+    margin-bottom: 0 ;
+}
+
+.icon-past-due{
+    font-size:20px;
+    color:grey;
+} 
+
+.icon-due{
+    font-size:20px;
+    color:black;
+}
+
+/*only viewed with mobile*/
+.content-mobile {
+   display: none;
+} 
+
+/* covers most mobile devices max-width 500 px.*/
+@media screen and (min-width: 0px) and (max-width: 500px) {
+    
+    .parent {
         width: 240px;
-        font-size: 0.85em;
+        font-size: 0.87em;
+    }
+  
+    .mobile-hide { 
+        display: none; 
     }
 
-    .contents{
-        width: 100%;
-        overflow-x: hidden; /* Hide horizontal scrollbar */
-        display: block;
-        float: none;
-        font-size: 0.85em;
-    }
-    .expand{
-        width: 40px;
-        float: none
-    }
+    .content-mobile {
+        display: inline;
+    } 
 }
-/* Surface Duo */
+/* covers mobile devices viewed portrait : Surface Duo */
 @media screen and (device-width: 540px) and (orientation:portrait) {
     .parent{
         width: 370px;
-        font-size: 0.80em;
+        font-size: 0.90em;
     }
 
     .contents{
@@ -130,7 +156,7 @@ a:hover{
         overflow-x: hidden; /* Hide horizontal scrollbar */
         display: block;
         float: left;
-        font-size: 0.85em;
+        font-size: 0.95em;
     }
 
     .expand{
@@ -145,7 +171,7 @@ a:hover{
 @media screen and (device-width: 768px) and (orientation:portrait) {
     .parent{
         width: 500px;
-        font-size: 0.80em;
+        font-size: 0.90em;
     }
 
     .contents{
@@ -175,22 +201,22 @@ a:hover{
         overflow-x: hidden; /* Hide horizontal scrollbar */
         display: block;
         float: left;
-        font-size: 0.85em;
+        font-size: 0.95em;
     }
 
     .expand{
         width: 30px;
         float: right;
         position: static;
-        font-size: 0.85em;
+        font-size: 0.95em;
     }
 }
 
 /* iPhone SE & iPhone 6,7,8 landscape */
 @media screen and (device-width: 667px) and (orientation:landscape) {
     .parent{
-        width: 400px;
-        font-size: 0.80em;
+        width: 440px;
+        font-size: 0.90em;
     }
 
     .contents{
@@ -198,36 +224,69 @@ a:hover{
         overflow-x: hidden; /* Hide horizontal scrollbar */
         display: block;
         float: left;
-        font-size: 0.85em;
+        font-size: 0.95em;
     }
 
     .expand{
         width: 30px;
         float: right;
         position: static;
-        font-size: 0.85em;
+        font-size: 0.95em;
+    }
+
+    .content-mobile{
+        display: none;
     }
 }
-/* iPhone SE */
-
-@media screen and (min-device-width: 320px) and (max-device-width: 360px) and (orientation:portrait) {
+/* iPhone SE & iPhone 6,7,8 Plus landscape */
+@media screen and (device-width: 736px) and (orientation:landscape) {
     .parent{
-        width: calc(340px - (340px / 2));
-        font-size: 0.80em;
+        width: 520px;
+        font-size: 0.90em;
     }
 
     .contents{
-        width: 100%;
+        width: 90%;
         overflow-x: hidden; /* Hide horizontal scrollbar */
         display: block;
-        float: none;
-        font-size: 0.8em;
+        float: left;
+        font-size: 0.95em;
     }
 
     .expand{
         width: 30px;
+        float: right;
         position: static;
-        font-size: 0.8em;
-        float: none;
+        font-size: 0.95em;
+    }
+
+    .content-mobile{
+        display: none;
+    }
+}
+
+@media screen and (device-width: 812px) and (orientation:landscape) {
+    .parent{
+        width: 600px;
+        font-size: 0.90em;
+    }
+
+    .contents{
+        width: 90%;
+        overflow-x: hidden; /* Hide horizontal scrollbar */
+        display: block;
+        float: left;
+        font-size: 0.95em;
+    }
+
+    .expand{
+        width: 30px;
+        float: right;
+        position: static;
+        font-size: 0.95em;
+    }
+
+    .content-mobile{
+        display: none;
     }
 }
