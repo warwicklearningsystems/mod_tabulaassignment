@@ -437,15 +437,15 @@ function tabulaassignment_get_coursemodule_info($coursemodule) {
         }        
 
         // Render assignment details
-        $info->content = "<h5>Tabula assignments</h5><p>The following assignments are listed in Tabula for module " . strtoupper($ta->modulecode) ;
+        $info->content = "<h5>Tabula assignments</h5><p class='headerSection'>The following assignments are listed in Tabula for module " . strtoupper($ta->modulecode) ;
 
         if ((!(empty($tabuladata))) && (sizeof($tabuladata)>0)){
-            $info->content .= ": " . "$modulename  ($academicyear ) </p>";
+            $info->content .= ": " . "$modulename  ($academicyear) </p>";
         } else {
             $info->content .= "</p>";
         }
         
-        $contentempty = "<p style='color:#2647a0; font-style:italic; font-size: 0.8em'>There are no Assignments listed in Tabula for this module </p>";
+        $contentempty = "<p class='nocontentHeader'>There are no Assignments listed in Tabula for this module </p>";
         // Render each assignment
         if (!(empty($tabuladata))){
             if (sizeof($tabuladata)==0){
