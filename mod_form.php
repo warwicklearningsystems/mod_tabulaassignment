@@ -42,20 +42,51 @@ class mod_tabulaassignment_mod_form extends moodleform_mod {
      * Defines forms elements
      */
     public function definition() {
-        global $CFG;
+        global $CFG, $COURSE;
 
         $mform = $this->_form;
 
         // Adding the "general" fieldset, where all the common settings are showed.
         $mform->addElement('header', 'general', get_string('general', 'form'));
+        
+        /*MOO-2140 changes to include default module code*/
+        $metadata = get_default_code($COURSE->id);
+        
+        if (isset($metadata)){
+            foreach($metadata as $k => $v){
+                switch ($k){
+                    case 'Module Code':
+                        $module_Code = $v;
+                }
+            }
+        }
+        $moduleCode = substr($module_Code, 0, 5);     
+        
+        $autopopulateoptions = array(
+                0 => get_string('no'),
+                1 => get_string('yes'),
+            );
+        $mform->addElement('select', 'defaultcodes', get_string('defaultcodes', 'tabulaassignment'), $autopopulateoptions);
+        $mform->addHelpButton('defaultcodes', 'defaultcodes', 'tabulaassignment');
+        
+        $str = 'autoupdate';
 
         // Adding the standard "name" field.
-        $options = ['size' => 5, 'maxlength' => 6, 'pattern'=>"[A-Za-z]{2}[A-Za-z0-9]{3}", 'placeholder'=>"modulecode", 'title'=>"Please enter the course code as in AANNN", 'required'];
+        $options = ['size' => 5, 'maxlength' => 6, 'pattern'=>"[A-Za-z]{2}[A-Za-z0-9]{3}", 'title'=>"Please enter the course code as in AANNN", 'required'];
         $mform->addElement('text', 'modulecode', get_string('modulecode', 'tabulaassignment'), $options);
-        $mform->setType('modulecode', PARAM_TEXT);
-        $mform->addRule('modulecode', null, 'required', null, 'client');
-        $mform->addRule('modulecode', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
+        $mform->setType('modulecode', PARAM_ALPHANUMEXT);
         $mform->addHelpButton('modulecode', 'modulecode', 'tabulaassignment');
+        
+        /*MOO-2140 changes to include default module code */
+        if (((is_null($module_Code))) || (!(isset($metadata)))){
+            $mform->setDefault('autoupdate',1);
+            $mform->setDefault('defaultcodes', 0);
+        } else{
+            $mform->setDefault('defaultcodes', 1);
+            $mform->setDefault('modulecode', $moduleCode);
+        }
+        /*MOO-2140 changes to default module code: disable the field if defaultcode exists */
+        $mform->disabledIf('modulecode', 'defaultcodes', 'eq', 1);
 
         // Add standard elements, common to all modules.
         $this->standard_coursemodule_elements();
