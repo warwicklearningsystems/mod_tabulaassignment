@@ -50,3 +50,8 @@ $string['apiusername'] = 'API User Name';
 $string['apipassword'] = 'API User password';
 $string['hoursgrace'] = 'Number of Hours for submission after due Date';
 $string['hoursgrace_desc'] = 'Please enter the Number of Hours student has for submission after due date';
+$string['defaultcodes'] = 'Use default module code';
+$string['defaultcodes_help'] = 'Check \'Yes\' if you wish to use the current Course code and academic year.<br />
+this will automatically retrieve the current Course code setup in Course Settings.<br />
+If No default course code is vailable or have not yet been setup, you will be required to use new course code.<br />
+To not use the default code, change this option back to \'No\', to enter new course code and academic year';

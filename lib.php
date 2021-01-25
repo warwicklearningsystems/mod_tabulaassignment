@@ -614,3 +614,24 @@ function sort_data($array){
     array_multisort($ord, SORT_ASC, $vals, SORT_DESC, $array);
     return $array;
 }
+
+/* MOO-2140 Inserted function get_default_code() to retrieve default course code.
+ * this contains all the default codes
+ */
+function get_default_code($courseid) {
+    $handler = \core_customfield\handler::get_handler('core_course', 'course');
+    // This is equivalent to the line above.
+    //$handler = \core_course\customfield\course_handler::create();
+    $datas = $handler->get_instance_data($courseid);
+    
+    $metadata = [];
+    foreach ($datas as $data) {
+        if (empty($data->get_value())) {
+            continue;
+        }
+        $cat = $data->get_field()->get_category()->get('name');
+        $metadata[$data->get_field()->get('name')] = $data->get_value();
+    }
+
+    return $metadata;
+}
