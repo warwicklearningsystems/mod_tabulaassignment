@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -15,22 +16,15 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines the version and other meta-info about the plugin
+ * Metadata class object
  *
- * Setting the $plugin->version to 0 prevents the plugin from being installed.
- * See https://docs.moodle.org/dev/version.php for more info.
- *
- * @package    mod_warwicklabel
- * @copyright  2016 Your Name <your@email.address>
+ * @package    mod_modulecatalogue
+ * @copyright  2021 Your Name <frederick.evans@warwick.ac.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+class metadata{
+    public $moduleCode = '';
+    public $academicYear = '';
+}
 
-$plugin->component = 'mod_tabulaassignment';
-$plugin->version = 2021041300;
-$plugin->release = 'v2.0';
-$plugin->requires = 2014051200;
-$plugin->maturity = MATURITY_STABLE;
-$plugin->cron = 0;
-$plugin->dependencies = array();

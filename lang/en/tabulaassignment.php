@@ -30,7 +30,11 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['modulename'] = 'Tabula Assignment';
 $string['modulenameplural'] = 'tabulaassignments';
-$string['modulename_help'] = 'Use the Tabula assignment module for... | The Tabula assignment module allows...';
+$string['modulename_help'] = 'Use the Tabula assignment module for...
+
+Tabula Assignment may be used
+
+* To display list of upcomming assesments, examinations and assignments';
 $string['tabulaassignment:addinstance'] = 'Add a new tabulaassignment';
 $string['tabulaassignment:submit'] = 'Submit tabulaassignment';
 $string['tabulaassignment:view'] = 'View tabulaassignment';
@@ -55,3 +59,8 @@ $string['defaultcodes_help'] = 'Check \'Yes\' if you wish to use the current Cou
 this will automatically retrieve the current Course code setup in Course Settings.<br />
 If No default course code is vailable or have not yet been setup, you will be required to use new course code.<br />
 To not use the default code, change this option back to \'No\', to enter new course code and academic year';
+$string['modulename_link'] = 'mod/tabulaassignment/view';
+
+$string['privacy:metadata'] = 'The Label resource plugin does not store any personal data.';
+$string['pluginadministration'] = 'Tabula Assignment Administration';
+$string['search:activity'] = 'Tabulaassignment';

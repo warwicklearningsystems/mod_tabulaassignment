@@ -40,7 +40,20 @@ require_once(dirname(__FILE__) . '/classes/output/renderer.php');
  */
 define('tabulaassignment_ULTIMATE_ANSWER', 42);
 
-/* Moodle core API */
+/* MOO 2202 Added code for Recycle bin */
+/**
+ * @uses CATALOGUE_MAX_NAME_LENGTH
+ * @param object $tabulaassignment
+ * @return string
+ */
+function get_tabulaassignment_name($tabulaassignment) {
+     
+    if (empty($name)) {
+        // arbitrary name
+        $name = get_string('modulename','tabulaassignment');
+    }
+    return $name;
+}
 
 /**
  * Returns the information on whether the module supports a feature
@@ -50,18 +63,31 @@ define('tabulaassignment_ULTIMATE_ANSWER', 42);
  * @param string $feature FEATURE_xx constant for requested feature
  * @return mixed true if the feature is supported, null if unknown
  */
+/**
+ * @uses FEATURE_IDNUMBER
+ * @uses FEATURE_GROUPS
+ * @uses FEATURE_GROUPINGS
+ * @uses FEATURE_MOD_INTRO
+ * @uses FEATURE_COMPLETION_TRACKS_VIEWS
+ * @uses FEATURE_GRADE_HAS_GRADE
+ * @uses FEATURE_GRADE_OUTCOMES
+ * @param string $feature FEATURE_xx constant for requested feature
+ * @return bool|null True if module supports feature, false if not, null if doesn't know
+ */
 function tabulaassignment_supports($feature) {
-
     switch($feature) {
+        case FEATURE_IDNUMBER:                return true;
+        case FEATURE_GROUPS:                  return false;
+        case FEATURE_GROUPINGS:               return false;
         case FEATURE_MOD_INTRO:               return false;
-        case FEATURE_SHOW_DESCRIPTION:        return false;
-        case FEATURE_GRADE_HAS_GRADE:         return false;
-        case FEATURE_BACKUP_MOODLE2:          return false;
         case FEATURE_COMPLETION_TRACKS_VIEWS: return false;
+        case FEATURE_GRADE_HAS_GRADE:         return false;
         case FEATURE_GRADE_OUTCOMES:          return false;
-        case FEATURE_NO_VIEW_LINK:            return true; // critical to stop display of link to resource
-        case FEATURE_IDNUMBER:                return false;
-        default:                              return null;
+        case FEATURE_MOD_ARCHETYPE:           return MOD_ARCHETYPE_RESOURCE;
+        case FEATURE_BACKUP_MOODLE2:          return true;
+        case FEATURE_NO_VIEW_LINK:            return true;
+
+        default: return null;
     }
 }
 
@@ -77,16 +103,21 @@ function tabulaassignment_supports($feature) {
  * @param mod_tabulaassignment_mod_form $mform The form instance itself (if needed)
  * @return int The id of the newly inserted tabulaassignment record
  */
-function tabulaassignment_add_instance(stdClass $tabulaassignment, mod_tabulaassignment_mod_form $mform = null) {
+function tabulaassignment_add_instance($tabulaassignment) {
     global $DB;
 
-  $tabulaassignment->timecreated = time();
+    $tabulaassignment->name = get_tabulaassignment_name($tabulaassignment);
+    $tabulaassignment->timemodified = time();
+    $tabulaassignment->timecreated = time();
 
     // You may have to add extra stuff in here.
 
-  $tabulaassignment->id = $DB->insert_record('tabulaassignment', $tabulaassignment);
+    $tabulaassignment->id = $DB->insert_record('tabulaassignment', $tabulaassignment);
+    
+    $completiontimeexpected = !empty($tabulaassignment->completionexpected) ? $tabulaassignment->completionexpected : null;
+    \core_completion\api::update_completion_date_event($tabulaassignment->coursemodule, 'tabulaassignment', $id, $completiontimeexpected);
 
-  return $tabulaassignment->id;
+    return $tabulaassignment->id;
 }
 
 /**
@@ -100,14 +131,17 @@ function tabulaassignment_add_instance(stdClass $tabulaassignment, mod_tabulaass
  * @param mod_tabulaassignment_mod_form $mform The form instance itself (if needed)
  * @return boolean Success/Fail
  */
-function tabulaassignment_update_instance(stdClass $tabulaassignment, mod_tabulaassignment_mod_form $mform = null) {
+function tabulaassignment_update_instance($tabulaassignment) {
     global $DB;
 
+    $tabulaassignment->name = get_tabulaassignment_name($tabulaassignment);
     $tabulaassignment->timemodified = time();
     $tabulaassignment->id = $tabulaassignment->instance;
 
     // You may have to add extra stuff in here.
-
+    $completiontimeexpected = !empty($tabulaassignment->completionexpected) ? $tabulaassignment->completionexpected : null;
+    \core_completion\api::update_completion_date_event($tabulaassignment->coursemodule, 'tabulaassignment', $tabulaassignment->id, $completiontimeexpected);
+    
     $result = $DB->update_record('tabulaassignment', $tabulaassignment);
 
     return $result;
@@ -160,12 +194,19 @@ function tabulaassignment_delete_instance($id) {
     if (! $tabulaassignment = $DB->get_record('tabulaassignment', array('id' => $id))) {
         return false;
     }
-
+    
+    $result = true;
+    
+    $cm = get_coursemodule_from_instance('tabulaassignment', $id);
+    \core_completion\api::update_completion_date_event($cm->id, 'tabulaassignment', $tabulaassignment->id, null);
+    
     // Delete any dependent records here.
 
-    $DB->delete_records('tabulaassignment', array('id' => $tabulaassignment->id));
+    if (! $DB->delete_records("tabulaassignment", array("id"=>$tabulaassignment->id))){
+        $result = false;
+    }
 
-    return true;
+    return $result;
 }
 
 /**
@@ -391,10 +432,26 @@ function tabulaassignment_pluginfile($course, $cm, $context, $filearea, array $a
  */
 function tabulaassignment_get_coursemodule_info($coursemodule) {
     global $DB, $COURSE, $PAGE;
+    
+    require_once(dirname(__FILE__).'/db/metadata.php');
+    
+    $defaultcodes = tabulaassignment_get_default_code($COURSE->id);
 
-    if ($ta = $DB->get_record('tabulaassignment', array('id'=>$coursemodule->instance), 'id, name, modulecode, assignmentuuid')) {
+    if ($ta = $DB->get_record('tabulaassignment', array('id'=>$coursemodule->instance), 'id, name, modulecode, assignmentuuid, timecreated, intro, introformat')) {
 
+        if (empty($ta->name)){
+            // tabulaassignment name missing, fix it
+            $ta->name = "tabulaassignment{$ta->id}";
+            $DB->set_field('tabulaassignment', 'name', $ta->name, array('id'=>$ta->id));
+        }
+        
         $info = new cached_cm_info();
+        // no filtering hre because this info is cached and filtered later
+        $info->content = format_module_intro('tabulaassignment', $ta, $coursemodule->id, false);
+        $info->name  = $ta->name;
+        $info->modulecode = $ta->modulecode;
+        $info->timecreated = $ta->timecreated;
+        $info->assignmentuuid = $ta->assignmentuuid;
         
         $lists = array();
         if(empty($ta->name)) {
@@ -418,8 +475,6 @@ function tabulaassignment_get_coursemodule_info($coursemodule) {
                 $cache->purge();
                 $tabuladata = get_tabula_assignment_data($ta->modulecode, $academicyear);
                 $lists = store_cache($tabuladata, $cache);
-            }
-            else{
             }
             $tabuladata = sort_data($lists);
             
@@ -465,6 +520,21 @@ function tabulaassignment_get_coursemodule_info($coursemodule) {
         return null;
     }
 }
+
+/**
+ * Check if the module has any update that affects the current user since a given time.
+ *
+ * @param  cm_info $cm course module data
+ * @param  int $from the time to check updates from
+ * @param  array $filter  if we need to check only specific updates
+ * @return stdClass an object with the different type of areas indicating if they were updated or not
+ * @since Moodle 3.2
+ */
+function tabulaassignment_check_updates_since(cm_info $cm, $from, $filter = array()) {
+    $updates = course_check_module_updates_since($cm, $from, array(), $filter);
+    return $updates;
+}
+
 /* Moo 2045 current_academic_year() returns current academic year
  * used as default in Locallib.php
  */
@@ -615,14 +685,17 @@ function sort_data($array){
     return $array;
 }
 
+
 /* MOO-2140 Inserted function get_default_code() to retrieve default course code.
  * this contains all the default codes
  */
-function get_default_code($courseid) {
+function tabulaassignment_get_default_code($courseid) {
     $handler = \core_customfield\handler::get_handler('core_course', 'course');
     // This is equivalent to the line above.
     //$handler = \core_course\customfield\course_handler::create();
     $datas = $handler->get_instance_data($courseid);
+    
+    $defaultcodes = new metadata();
     
     $metadata = [];
     foreach ($datas as $data) {
@@ -632,6 +705,17 @@ function get_default_code($courseid) {
         $cat = $data->get_field()->get_category()->get('name');
         $metadata[$data->get_field()->get('name')] = $data->get_value();
     }
+    
+    if (isset($metadata)){
+        foreach($metadata as $k => $v){
+            switch ($k){
+                case 'Module Code':
+                    $defaultcodes->moduleCode = $v;
+                case 'Academic Year':
+                    $defaultcodes->academicYear = $v;    
+            }
+        }
+    }
 
-    return $metadata;
+    return $defaultcodes;
 }
