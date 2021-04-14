@@ -28,8 +28,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/lib/filelib.php');
-require_once(dirname(__FILE__).'/db/DataModel.php'); 
-require_once(dirname(__FILE__).'/db/DateCache.php');
+require_once(dirname(__FILE__).'/db/datamodel.php'); 
+require_once(dirname(__FILE__).'/db/datecache.php');
 
 /**
  * Retrieves assignment data from Tabula API

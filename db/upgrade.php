@@ -41,6 +41,23 @@ function xmldb_tabulaassignment_upgrade($oldversion) {
     global $DB;
 
     $dbman = $DB->get_manager(); // Loads ddl manager and xmldb classes.
+    
+     /*
+     * MOO-2202 changes to enable recycle bin functionality
+     */
+    if ($oldversion < 2021041300){
+        $default = "";
+        
+        $table = new xmldb_table('tabulaassignment');
+        $field = new xmldb_field('intro');
+        $field1 = new xmldb_field('introformat');
+        $field->set_attributes(XMLDB_TYPE_CHAR, '15', XMLDB_UNSIGNED, false, false, $default);
+        $field1->set_attributes(XMLDB_TYPE_INTEGER, '4', XMLDB_UNSIGNED, false, false, "0");
+        if (!$dbman->field_exists($table, $field)){
+            $dbman->add_field($table, $field);
+            $dbman->add_field($table, $field1);
+        }
+    }
 
     return true;
 }
