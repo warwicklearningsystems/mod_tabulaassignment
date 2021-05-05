@@ -5,7 +5,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-class datamodel{
+class DataModel{
     public $Code = '';
     public $moduleCode = '';
     public $moduleName = '';

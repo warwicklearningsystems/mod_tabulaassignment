@@ -5,7 +5,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-class datecache{
+class DateCache{
     public $minute = 0;
     public $hour = 04;
     public $day = 0;

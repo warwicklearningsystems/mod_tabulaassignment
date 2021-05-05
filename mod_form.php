@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -50,13 +49,18 @@ class mod_tabulaassignment_mod_form extends moodleform_mod {
         // Adding the "general" fieldset, where all the common settings are showed.
         $mform->addElement('header', 'general', get_string('general', 'form'));
         
-        //MOO-2202 metadata loading
-        require_once(dirname(__FILE__).'/db/metadata.php');
-        
         /*MOO-2140 changes to include default module code*/
-        $defaultcodes = tabulaassignment_get_default_code($COURSE->id);
+        $metadata = get_default_code($COURSE->id);
         
-        $moduleCode = substr($defaultcodes->moduleCode, 0, 5);     
+        if (isset($metadata)){
+            foreach($metadata as $k => $v){
+                switch ($k){
+                    case 'Module Code':
+                        $module_Code = $v;
+                }
+            }
+        }
+        $moduleCode = substr($module_Code, 0, 5);     
         
         $autopopulateoptions = array(
                 0 => get_string('no'),
@@ -74,13 +78,12 @@ class mod_tabulaassignment_mod_form extends moodleform_mod {
         $mform->addHelpButton('modulecode', 'modulecode', 'tabulaassignment');
         
         /*MOO-2140 changes to include default module code */
-        /*MOO-2202 Changes centralizing defaultdata as an instance of metadata*/
-        if (((is_null($defaultcodes->moduleCode))) || (!(isset($defaultcodes)))){
+        if (((is_null($module_Code))) || (!(isset($metadata)))){
             $mform->setDefault('autoupdate',1);
             $mform->setDefault('defaultcodes', 0);
         } else{
             $mform->setDefault('defaultcodes', 1);
-            $mform->setDefault('modulecode', $defaultcodes->moduleCode);
+            $mform->setDefault('modulecode', $moduleCode);
         }
         /*MOO-2140 changes to default module code: disable the field if defaultcode exists */
         $mform->disabledIf('modulecode', 'defaultcodes', 'eq', 1);

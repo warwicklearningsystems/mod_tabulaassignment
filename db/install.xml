@@ -13,8 +13,6 @@
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="modulecode" TYPE="char" LENGTH="30" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="assignmentuuid" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"/>
-        <FIELD NAME="intro" SEQUENCE="false" NOTNULL="false" LENGTH="15" TYPE="char"/>
-        <FIELD NAME="introformat" SEQUENCE="false" NOTNULL="false" LENGTH="4" TYPE="int" DEFAULT="0"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
